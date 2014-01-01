@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jqCandlestick examples</title>
+    
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.jqcandlestick.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="css/jqcandlestick.css" />
+    
+    <style type="text/css">
+      body {
+        font-family: sans-serif;
+      }
+      
+      .jqcandlestick-container {
+        width: 640px;
+        height: 480px;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <script type="text/javascript">
+      // Generate data
+      
+      var data = [];
+      
+      var time = new Date('2013-12-01 12:00').valueOf();
+      
+      var a = Math.floor(Math.random() * 100);
+      
+      for (var i = 0; i < 30; i++) {
+        data.push([time, a]);
+        a += Math.floor(Math.random() * 10 - 5);
+        time += 30 * 60000; // Add 30 minutes
+      }
+    </script>
+    
+    <h1>Points</h1>
+    
+    <div id="example-1"></div>
+    
+    <script type="text/javascript">
+      $(function() {
+        $('#example-1').jqCandlestick({
+          data: data,
+          theme: 'light',
+          series: [{
+          }],
+        });
+      });
+    </script>
+    
+    <h1>Line</h1>
+    
+    <div id="example-2"></div>
+    
+    <script type="text/javascript">
+      $(function() {
+        $('#example-2').jqCandlestick({
+          data: data,
+          theme: 'light',
+          series: [{
+            type: 'line',
+          }],
+        });
+      });
+    </script>
+    
+    <h1>Columns</h1>
+    
+    <div id="example-3"></div>
+    
+    <script type="text/javascript">
+      $(function() {
+        $('#example-3').jqCandlestick({
+          data: data,
+          theme: 'light',
+          series: [{
+            type: 'column',
+          }],
+        });
+      });
+    </script>
+    
+    <h1>Lines and points</h1>
+    
+    <div id="example-4"></div>
+    
+    <script type="text/javascript">
+      $(function() {
+        $('#example-4').jqCandlestick({
+          data: data,
+          theme: 'light',
+          series: [{
+            type: 'line',
+          }, {
+            type: 'point',
+          }],
+        });
+      });
+    </script>
+    
+    <h1>Colors</h1>
+    
+    <div id="example-5"></div>
+    
+    <script type="text/javascript">
+      $(function() {
+        $('#example-5').jqCandlestick({
+          data: data,
+          theme: 'light',
+          series: [{
+            type: 'line',
+            color: '#C00',
+            strokeWidth: 3,
+          }, {
+            type: 'point',
+            color: '#FFF',
+            stroke: '#C00',
+            radius: 5,
+            strokeWidth: 3,
+          }],
+        });
+      });
+    </script>
+  </body>
+</html>

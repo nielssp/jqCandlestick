@@ -1,4 +1,4 @@
 jqCandlestick
 =============
 
-jQuery plugin for creating charts line, bar and candlestick charts.
+jQuery plugin for creating line, bar and candlestick charts.
