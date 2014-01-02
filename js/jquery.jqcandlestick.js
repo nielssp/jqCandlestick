@@ -56,7 +56,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       return a[offset] - b[offset];
     });
 
-    if (!settings.xAxis.min || !settings.xAxis.max) {
+    if (settings.xAxis.min == null || settings.xAxis.max == null) {
       var min = null;
       var max = null;
       data.forEach(function(row) {
@@ -69,9 +69,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         else
           max = row[offset];
       });
-      if (!settings.xAxis.min)
+      if (settings.xAxis.min == null)
         settings.xAxis.min = min;
-      if (!settings.xAxis.max)
+      if (settings.xAxis.max == null)
         settings.xAxis.max = max;
     }
 
