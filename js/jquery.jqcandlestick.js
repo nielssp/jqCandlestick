@@ -424,11 +424,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         plotAreas.forEach(function(plot) {
           plot.series.forEach(function(series) {
             if (series.dataSize == 1) {
+              if (typeof series.name === 'string')
               info.push(series.name + ': ' + plot.formatLabel(values[series.dataOffset]));
             }
             else {
               for (var i = 0; i < series.dataSize; i++) {
-                info.push(series.names[i] + ': ' + plot.formatLabel(values[series.dataOffset + i]));
+                if (typeof series.names[i] === 'string') {
+                  info.push(series.names[i] + ': ' + plot.formatLabel(values[series.dataOffset + i]));
+                }
               }
             }
           });
