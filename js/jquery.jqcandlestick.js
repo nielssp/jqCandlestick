@@ -56,6 +56,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       return a[offset] - b[offset];
     });
 
+    // Find x-axis limits (if not defined in settings) 
     if (settings.xAxis.min == null || settings.xAxis.max == null) {
       var min = null;
       var max = null;
@@ -81,6 +82,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     var totalHeight = 0;
 
+    // Create plot areas
     settings.yAxis.forEach(function(axis) {
       axis = $.extend(true, {}, settings.yAxisDefaults, axis);
       totalHeight += axis.height;
@@ -93,21 +95,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         maxY: null,
         series: [],
       };
-      if (axis.labels.format.fixed !== null) {
-        var numDecimals = axis.labels.format.fixed; 
-        plot.formatLabel = function(value) {
-          if (value != null)
-            return value.toFixed(numDecimals);
-          else
-            return 'n/a';
-        };
-      }
-      else if (typeof axis.labels.format === 'function') {
+      if (typeof axis.labels.format === 'function') {
         plot.formatLabel = axis.labels.format;
       }
       else {
         plot.formatLabel = function(value) {
-          return value;
+          if (value != null)
+            return value.toFixed(axis.labels.format.fixed);
+          else
+            return 'n/a';
         };
       }
       plotAreas.push(plot);
@@ -117,6 +113,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       plot.height = plot.height / totalHeight;
     });
 
+    // Find plot area limits
     settings.series.forEach(function(series) {
       series = $.extend(true, {}, settings.seriesDefaults, series);
       var plotArea = plotAreas[series.yAxis];
@@ -145,9 +142,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     });
 
     plotAreas.forEach(function(plot) {
+      // Round limits to nearest multiple of a power of ten
       var power = Math.pow(10, Math.floor(Math.log(plot.max) / Math.log(10)));
       plot.max = Math.ceil(plot.max / power) * power;
       plot.min = Math.floor(plot.min / power) * power;
+
+      // Find appropriate precision for axis labels
+      if (typeof plot.yAxis.labels.format === 'object'
+          && (plot.yAxis.labels.format == null || plot.yAxis.labels.format.fixed == null)) {
+        var diff = plot.max - plot.min;
+        var log = Math.log(diff) / Math.log(10);
+        var decimals = -1 * Math.floor(log) + 2;
+        if (decimals > 0) {
+          plot.yAxis.labels.format = { fixed: decimals };
+        }
+        else {
+          plot.yAxis.labels.format = { fixed: 0 };
+        }
+      }
     });
 
     var minX = 0;
@@ -238,24 +250,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         ctx.lineWidth = plot.yAxis.strokeWidth;
         var span = plot.max - plot.min;
         var numTicks;
+        var step;
         if (plot.yAxis.numTicks != null) {
           numTicks = plot.yAxis.numTicks;
+          step = span / numTicks;
         }
         else {
           numTicks = Math.ceil((plot.maxY - plot.minY) / plot.yAxis.tickDistance);
+          step = span / numTicks;
+          var power = Math.pow(10, Math.floor(Math.log(step) / Math.log(10)));
+          step = Math.ceil(step / power) * power;
         }
-        var yStep = (plot.maxY - plot.minY) / numTicks;
-        var step = (plot.max - plot.min) / numTicks;
-        var y = plot.minY + yStep / 2;
-        var value = plot.max - step / 2;
-        for (var i = 0; i < numTicks; i++) {
+
+        var value = Math.floor(plot.max / step) * step;
+        for (var y = getY(plot, value); y < plot.maxY; value -= step, y = getY(plot, value)) {
           ctx.fillText(plot.formatLabel(value), minX - 10, y);
           ctx.beginPath();
           ctx.moveTo(minX, Math.floor(y) + 0.5);
           ctx.lineTo(maxX, Math.floor(y) + 0.5);
           ctx.stroke();
-          y += yStep;
-          value -= step;
         }
       });
 
@@ -546,9 +559,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       labels: {
         font: null,
         color: '#999',
-        format: {
-          fixed: 2,
-        },
+        format: null, // possible values: a function(x) or an object {fixed: y) where y is number of decimals
       },
     },
     seriesDefaults: {
