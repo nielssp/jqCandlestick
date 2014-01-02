@@ -37,9 +37,9 @@
       
       for (var i = 0; i < 30; i++) {
         data.push([time, o, h, l, c, v]);
-        h += Math.floor(Math.random() * 10 - 5);
-        l = h - Math.floor(Math.random() * 20);
-        o = h - Math.floor(Math.random() * (h - l));
+        o = c;
+        h = o + Math.floor(Math.random() * 10);
+        l = o - Math.floor(Math.random() * 10);
         c = h - Math.floor(Math.random() * (h - l));
         v += Math.floor(Math.random() * 100 - 50);
         time += 30 * 60000; // Add 30 minutes
@@ -172,6 +172,7 @@
           }, {
             type: 'column',
             name: 'VOLUME',
+            dataOffset: 5,
             yAxis: 1,
             color: '#0C0',
           }],
@@ -202,6 +203,7 @@
             type: 'column',
             name: 'VOLUME',
             yAxis: 1,
+            dataOffset: 5,
             stroke: '#00C',
             color: 'rgba(0, 0, 255, 0.5)',
           }],
