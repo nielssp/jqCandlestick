@@ -1,8 +1,8 @@
-#jqCandlestick
+# jqCandlestick
 
 jQuery plugin for creating line, bar and candlestick charts.
 
-##Supported browsers
+## Supported browsers
 
 Should work in all browsers that support the canvas element (tested in newest
 versions of Chrome, Firefox and Internet Explorer).
@@ -16,7 +16,7 @@ older version of jQuery. See https://code.google.com/p/explorercanvas for polyfi
 * Update data dynamically
 * Fix x-axis 
 
-##Usage
+## Usage
 
 Include jQuery, jqCandlestick JavaScript and jqCandlestick CSS:
 
